@@ -89,7 +89,7 @@ def divider(lista):
     return parts
 
 
-def exibir(host, _PORTS_OPEN):
+def exibir(host, _PORTS_OPEN, t_total):
     mini_init()
 
     tam = len(_PORTS_OPEN)
@@ -107,13 +107,13 @@ def exibir(host, _PORTS_OPEN):
                 try:
                     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     soc.settimeout(3)
-                    conn = soc.connect((_HOST, _PORT[i]))
+                    conn = soc.connect((host, _PORTS_OPEN[i]))
                     service = socket.getservbyport(_PORT[i])
                     print('[Aberta] [{}] - {}'.format(service))
                     soc.close()
                 except:
                     print('[Aberta] [{}] - Desconhecida'.format(_PORTS_OPEN[i]))
-    print('\nScan Concluido!')
+    print('\nScan concluido em {:.2f} segundos!'.format(t_total))
     _PORTS_OPEN = [] # Zerando o vetor para uma proxima verificação
 
 
@@ -364,7 +364,7 @@ if __name__ == "__main__":
                         ports = divider(port)
                         #print('Portas Divididas pelas threads > {}'.format(ports))
 
-                        inicio = time.time()
+                        t_inicio = time.time()
                         for i in range(_N_THREADS):
                             # print('Thread {} Iniciada...'.format(i))
                             th.append(threading.Thread(
@@ -374,13 +374,12 @@ if __name__ == "__main__":
                         for i in range(len(th)):
                             # print('Aguardando Thread {} Terminar'.format(i))
                             th[i].join()
-                        fim = time.time()
-                        total = fim - inicio
+                        t_fim = time.time()
+                        t_total = t_fim - t_inicio
 
                         th = [] # limpo o vetor de threads para poder reutiliza-lo
 
-                        exibir(host_name_ip, _PORTS_OPEN)
-                        print('Demorou {}'.format(total))
+                        exibir(host_name_ip, _PORTS_OPEN, t_total)
                         _PORTS_OPEN = [] # Limpando vetor para reutilizar na proxima interação
 
                     else:
