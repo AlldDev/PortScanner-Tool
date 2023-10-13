@@ -4,7 +4,8 @@ import selectors
 import threading
 import sys
 import os
-import concurrent.futures
+import subprocess
+#import concurrent.futures
 import time
 
 # VAR GLOBALs #######################################################
@@ -56,7 +57,7 @@ def mini_init():
     '░░▀██▄▄██████████▀░███▀▀▀█████████▄▄▄█▀░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n')
 
 
-def p_scan(_HOST, _PORT):
+def p_scan(_HOST, _PORT, _TIMEOUT):
     try:
         for i in range(len(_PORT)):
             if len(_PORT) <= 0:
@@ -64,7 +65,7 @@ def p_scan(_HOST, _PORT):
 
             try:
                 soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                soc.settimeout(0.5)
+                soc.settimeout(_TIMEOUT)
                 # print('Scaneando porta [{}]'.format(_PORT[i]))
                 conn = soc.connect((_HOST, _PORT[i]))
                 # service = socket.getservbyport(_PORT[i])
@@ -122,6 +123,21 @@ def get_ip(host):
         return ip
     except:
         return host
+
+
+def ping_host(host):
+    if sys.platform.startswith('win'):
+        cmd = ['ping', '-n', '1', host]
+    else:
+        cmd = ['ping', '-c', '1', host]
+
+    try:
+        output = subprocess.check_output(cmd)
+        print('Host {} ativo.'.format(host))
+        return True
+    except:
+        print('Host {} não acessivel.'.format(host))
+        return False
 
 
 # MAIN ##############################################################
@@ -285,54 +301,91 @@ if __name__ == "__main__":
             if key.fileobj == sys.stdin.fileno():
                 data = sys.stdin.readline()
 
+                # Se precisar de ajuda.
                 if data[:5] == '/help':
                     init()
 
+                # Se quiser fechar o sistema de maneira correta
+                if data[:5] == '/exit':
+                    sys.close()
+
+                # Para começar o Scan
                 if data[:5] == '/scan':
-                    try:
-                        host, port = data[6:].split(' ', 2)
-                        print('Iniciando Scan no Host {}.\nPor favor, Aguarde...'.format(host))
-                        host_ip = get_ip(host)
-
-                        if host == host_ip:
-                            host_name_ip = host_ip
-                        else:
-                            host_name_ip = host + " - " + host_ip
-                    
-                        if port[:len(port) - 1] == 'default_ports':
-                            port = _PORT_DEFAULT
-                        
-                        elif port[:len(port) - 1] == 'all_ports':
-                            port = _PORT_ALL
-
-                        else:
-                            port = port[:len(port)-1].split(',')
-                            port_div = []
-                            for i in range(len(port)):
-                                port_div.append(int(port[i]))
-
-                            port = port_div
-                    except:
-                        print('Erro no input... Certeza que seguiu o protocolo?\nDuvidas digite /help.')
-
-                    ports = divider(port)
-                    #print('Portas Divididas pelas threads > {}'.format(ports))
+                    mini_init()
+                    host, p, port, m, modo = data[6:].split() # Divido a Entrada para tratar cada parte
+                    ativo = ping_host(host) # Verifico se o Host está ativo antes de começar
 
 
-                    for i in range(_N_THREADS):
-                        # print('Thread {} Iniciada...'.format(i))
-                        th.append(threading.Thread(
-                              target=p_scan, args=(host_ip, ports[i])))
-                        th[i].start()
+                    # Se estiver ativo, ele começa a Scanear
+                    if ativo == True:
+                        print('Iniciando Serviços...')
+                        try:
+                            #host, port = data[6:].split(' ', 2)
+                            print('Scaneando Host {}.\nPor favor, Aguarde...'.format(host))
+                            host_ip = get_ip(host) # Aqui ele pega o IP caso o usuário tenha passado um Dominio
 
-                    for i in range(len(th)):
-                        # print('Aguardando Thread {} Terminar'.format(i))
-                        th[i].join()
+                            # Apenas Verifico para quando exibir aparecer o IP, ou se for dominio
+                            # aparecer o dominio juntamente com o IP (resolvido DNS)
+                            if host == host_ip:
+                                host_name_ip = host_ip
+                            else:
+                                host_name_ip = host + " - " + host_ip
 
-                    th = [] # limpo o vetor de threads para poder reutiliza-lo
 
-                    exibir(host_name_ip, _PORTS_OPEN)
-                    _PORTS_OPEN = [] # Limpando vetor para reutilizar na proxima interação
+                            # Verificação se o usuário digitou a porta ou selecionou uma
+                            # das opções já existentes
+                            if port == 'default':
+                                port = _PORT_DEFAULT
+
+                            elif port == 'all':
+                                port = _PORT_ALL
+
+                            elif p == '-p':
+                                port = port[3:len(port)-1].split(',')
+                                port_div = []
+                                for i in range(len(port)):
+                                    port_div.append(int(port[i]))
+                                port = port_div
+
+
+                            # Verificando o modo selecionado
+                            if m == '-m':
+                                if modo == 'normal':
+                                    timeout = 1
+                                elif modo == 'fast':
+                                    timeout = 0.5
+                                elif modo == 'slow':
+                                    timeout = 3
+
+
+                        except:
+                            print('Erro no input...\nDuvidas digite /help.')
+
+                        ports = divider(port)
+                        #print('Portas Divididas pelas threads > {}'.format(ports))
+
+                        inicio = time.time()
+                        for i in range(_N_THREADS):
+                            # print('Thread {} Iniciada...'.format(i))
+                            th.append(threading.Thread(
+                                target=p_scan, args=(host_ip, ports[i], timeout)))
+                            th[i].start()
+
+                        for i in range(len(th)):
+                            # print('Aguardando Thread {} Terminar'.format(i))
+                            th[i].join()
+                        fim = time.time()
+                        total = fim - inicio
+
+                        th = [] # limpo o vetor de threads para poder reutiliza-lo
+
+                        exibir(host_name_ip, _PORTS_OPEN)
+                        print('Demorou {}'.format(total))
+                        _PORTS_OPEN = [] # Limpando vetor para reutilizar na proxima interação
+
+                    else:
+                        print('Tente novamente...')
+
                 
             # Se receber algo de algum servidor
             else:
