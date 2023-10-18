@@ -6,14 +6,17 @@ import sys
 import os
 import subprocess
 import time
-from typing import List, Any
+
+# from typing import List, Any
 
 # VAR GLOBALs #######################################################
 _PORT_DEFAULT = [
     20, 21, 22, 23, 25, 53, 67, 68, 69, 80, 88, 110, 111, 119, 123, 135, 137, 138, 139, 143,
     161, 162, 179, 194, 389, 443, 445, 465, 514, 515, 587, 636, 993, 995, 1080, 1099, 1433,
     3306, 6666, 8443, 1521, 27017, 3389, 5432, 5900, 6660, 6661, 6665, 6667, 6668, 6669,
-    6697, 7000, 8000, 8008, 8080, 8081, 9000, 9100, 9999, 10000, 50000, 49152]
+    6697, 7000, 8000, 8008, 8080, 8081, 9000, 9100, 9999, 10000, 50000, 49152,
+    119, 375, 425, 1214, 412, 1412, 2412, 4661, 4662, 4665, 5500, 6346, 6881,
+    6882, 6883, 6884, 6885, 6886, 6887, 6888, 6889]
 
 _PORT_ALL = range(1, 65536)
 _PORTS_INPUT = []
@@ -22,41 +25,45 @@ _N_THREADS = (os.cpu_count()) * 2
 
 
 # FUNCTIONs #########################################################
-def init():
+def menuExibir():
     os.system('cls||clear')
     print(
-        '░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░TexugoScan v1░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░░░░░░░▄▄▄▄▄▄▄▄░░░░░░░░░░░░░░░░░░░░░░░░░░░░░portscan.py░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░▄█▀███▄▄████████████████████▄▄███▀█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░█░░▀████████████████████████████░░█░░░░░/scan <alvo> -p <porta> -m <modo>░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░█▄░░▀████████████████████████░░░▄▀░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░▀█▄▄████▀▀▀░░░░██░░░▀▀▀█████▄▄█▀░░░░░░<alvo> -> IP ou Domínio░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░▄███▀▀░░░░░░░░░██░░░░░░░░░▀███▄░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░▄██▀░░░░░▄▄▄██▄▄██░▄██▄▄▄░░░░░▀██▄░░░░░<porta> -> Separada por Virgula (ex: 80, 443, 9050).░░░░░░░░░░░░░░░░░\n'
-        '░░▄██▀░░░▄▄▄███▄██████████▄███▄▄▄░░░▀█▄░░░░░░░░░░░░░░░default - Scaneia as 30 principais portas.░░░░░░░░░░░░░░░░\n'
-        '░░▀██▄▄██████████▀░███▀▀▀█████████▄▄▄█▀░░░░░░░░░░░░░░░all - Scaneia as 65536 portas, (Pode demorar um pouco).░░░\n'
-        '░░░░▀██████████▀░░░███░░░▀███████████▀░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░▀▀▀██████░░░█████▄░░▀██████▀▀░░░░░░░░<modo> -> fast - (0.5s de timeout)░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░▀▀▀▀▄░░█████▀░▄█▀▀▀░░░░░░░░░░░░░░░░░░░░░░░normal - (1s de timeout)░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░░░░░░▀▀▄▄▄▄▄▀▀░░░░░░░░░░░░░░░░░░░░░░░░░░░░slow - (3s de timeout)░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░Exemplo: /scan seusite.com.br -p default -m fast░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ou 192.168.2.X░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        'Digite:')
+        '   ▄████████  ▄█    ▄▄▄▄███▄▄▄▄      ▄███████▄  ▄█          ▄████████         ▄████████  ▄████████    ▄████████ ███▄▄▄▄   \n'
+        '  ███    ███ ███  ▄██▀▀▀███▀▀▀██▄   ███    ███ ███         ███    ███        ███    ███ ███    ███   ███    ███ ███▀▀▀██▄ \n'
+        '  ███    █▀  ███▌ ███   ███   ███   ███    ███ ███         ███    █▀         ███    █▀  ███    █▀    ███    ███ ███   ███ \n'
+        '  ███        ███▌ ███   ███   ███   ███    ███ ███        ▄███▄▄▄            ███        ███          ███    ███ ███   ███ \n'
+        '▀███████████ ███▌ ███   ███   ███ ▀█████████▀  ███       ▀▀███▀▀▀          ▀███████████ ███        ▀███████████ ███   ███ \n'
+        '         ███ ███  ███   ███   ███   ███        ███         ███    █▄                ███ ███    █▄    ███    ███ ███   ███ \n'
+        '   ▄█    ███ ███  ███   ███   ███   ███        ███▌    ▄   ███    ███         ▄█    ███ ███    ███   ███    ███ ███   ███ \n'
+        ' ▄████████▀  █▀    ▀█   ███   █▀   ▄████▀      █████▄▄██   ██████████       ▄████████▀  ████████▀    ███    █▀   ▀█   █▀  \n'
+        '                                               ▀                                                                          \n'
+        '    -=- Uma simples ferramenta de scan -=- Leia o README.md -=- Uma simples ferramenta de scan -=- Leia o README.md -=-   \n'
+        '                                        -=- Precisa de ajuda? digite /help -=-                                            \n'
+    )
 
 
-def mini_init():
+def menuHelp():
     os.system('cls||clear')
+    menuExibir()
     print(
-        '░░░░█▄░░▀████████████████████████░░░▄▀░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░▀█▄▄████▀▀▀░░░░██░░░▀▀▀█████▄▄█▀░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░░▄███▀▀░░░░░░░░░██░░░░░░░░░▀███▄░░░░░░░░░░░░TexugoScan v1░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░░░▄██▀░░░░░▄▄▄██▄▄██░▄██▄▄▄░░░░░▀██▄░░░░░░░░░░░░░░░portscan.py░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░▄██▀░░░▄▄▄███▄██████████▄███▄▄▄░░░▀█▄░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n'
-        '░░▀██▄▄██████████▀░███▀▀▀█████████▄▄▄█▀░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n')
+        '-=-MODO DE UTILIZAR -=-\n'
+        '/scan <alvo> -p <porta> -m <modo>\n'
+        '-------------------------------------------------------------\n'
+        '<alvo> - IP ou Domínio.\n'
+        '-------------------------------------------------------------\n'
+        '<porta> -> Portas ou Protocolo\n'
+        'Portas Especificas separar por Virgula (ex: 80,443,9050).\n'
+        'default - Scaneia as 30 principais portas.\n'
+        'all - Scaneia as 65536 portas, (Pode demorar um pouco).\n'
+        '--------------------------------------------------------------\n'
+        '<modo> -> Seleciona o timeout (Muito util)\n'
+        'fast - (1s de timeout)\n'
+        'normal - (1.5s de timeout)\n'
+        'slow - (4s de timeout)\n\n'
+        '-=- EXEMPLO -=-\n'
+        '/scan seusite.com.br -p default -m fast\n'
+        '      ou 192.168.0.X\n'
+    )
 
 
 def p_scan(_HOST, _PORT, _TIMEOUT):
@@ -92,13 +99,13 @@ def divider(lista):
 
 
 def exibir(host, _PORTS_OPEN, t_total):
-    mini_init()
+    menuExibir()
 
     tam = len(_PORTS_OPEN)
     _PORTS_OPEN.sort()
 
     if tam <= 0:
-        print('Nenhuma porta aberta foi identificada. Tente novamente...')
+        print('Nenhuma porta aberta foi identificada! (Alguns endereços precisam de um timeout maior).')
     else:
         print('Host: {}\n'.format(host))
         print('[STATUS] [PORTA]   [SERVIÇO EXECUTANDO]\n')
@@ -114,7 +121,7 @@ def exibir(host, _PORTS_OPEN, t_total):
                     print('[Aberta] [{}] - {}'.format(service))
                     soc.close()
                 except:
-                    print('[Aberta] [{}] - Desconhecida'.format(_PORTS_OPEN[i]))
+                    print('[Aberta] [{}] - Não identificada'.format(_PORTS_OPEN[i]))
     print('\nScan concluido em {:.2f} segundos!'.format(t_total))
     _PORTS_OPEN = []  # Zerando o vetor para uma proxima verificação
 
@@ -127,6 +134,9 @@ def get_ip(host):
         return host
 
 
+# Função não utilizada, pois alguns hosts não responde ao ping
+# com isso, deixamos de scanear... então decidi não utilizar mais
+# o ping antes, fazendo o Scan direto...
 def ping_host(host):
     if sys.platform.startswith('win'):
         cmd = ['ping', '-n', '1', host]
@@ -270,27 +280,31 @@ if __name__ == "__main__":
 
     th = []
 
-    init()
+    menuExibir()
     # Loop Principal ################################################
     while True:
+        print('Digite:')
         data = sys.stdin.readline()
 
         # Se precisar de ajuda.
         if data[:5] == '/help':
-            init()
+            menuHelp()
 
         # Se quiser fechar o sistema de maneira correta
         if data[:5] == '/exit':
+            menuExibir()
+            print('Espero vê-lo em breve !!! Até mais ;D')
             sys.exit()
 
         # Para começar o Scan
         if data[:5] == '/scan':
-            mini_init()
+            menuExibir()
             host, p, port, m, modo = data[6:].split()  # Divido a Entrada para tratar cada parte
-            ativo = ping_host(host)  # Verifico se o Host está ativo antes de começar
+            # ativo = ping_host(host)  # Verifico se o Host está ativo antes de começar
 
             # Se estiver ativo, ele começa a Scanear
-            if ativo == True:
+            # (Desativado, Muitos hosts não responde Ping... deixei apenas if True para se um dia quiser voltar...)
+            if True:
                 print('Iniciando Serviços...')
                 try:
                     # host, port = data[6:].split(' ', 2)
@@ -308,32 +322,37 @@ if __name__ == "__main__":
                     # das opções já existentes
                     if port == 'default':
                         port = _PORT_DEFAULT
-
                     elif port == 'all':
                         port = _PORT_ALL
-
                     elif p == '-p':
                         port = port[3:len(port) - 1].split(',')
                         port_div = []
                         for i in range(len(port)):
                             port_div.append(int(port[i]))
                         port = port_div
+                    else:
+                        print('Erro na declaração das portas!\nDuvidas digite /help.')
+                        continue
 
                     # Verificando o modo selecionado
                     if m == '-m':
                         if modo == 'normal':
-                            timeout = 1
+                            timeout = 1.5
                         elif modo == 'fast':
-                            timeout = 0.5
+                            timeout = 1
                         elif modo == 'slow':
-                            timeout = 3
-
+                            timeout = 4
+                        else:
+                            print('Modo "{}" não existe!\nDuvidas digite /help.'.format(modo))
+                    else:
+                        print('Erro na declaração dos modos!\nDuvidas digite /help.')
+                        continue
 
                 except:
-                    print('Erro no input...\nDuvidas digite /help.')
+                    print('Erro na entrada!\nDuvidas digite /help.')
+                    continue
 
-                ports = divider(port)
-                # print('Portas Divididas pelas threads > {}'.format(ports))
+                ports = divider(port)  # Dividindo as portas pelo número de threads
 
                 t_inicio = time.time()
                 for i in range(_N_THREADS):
