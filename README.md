@@ -1,1 +1,1 @@
-# SimpleScaner
+# SimpleScan
