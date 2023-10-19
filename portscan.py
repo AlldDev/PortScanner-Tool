@@ -56,21 +56,23 @@ def menuHelp():
         'all - Scaneia as 65536 portas, (Pode demorar um pouco).\n'
         '--------------------------------------------------------------\n'
         '<modo> -> Seleciona o timeout (Muito util)\n'
-        'fast - (1s de timeout)\n'
-        'normal - (1.5s de timeout)\n'
-        'slow - (4s de timeout)\n\n'
+        'fast - (0.2s de timeout) - Recomendado para REDES LOCAIS.\n'
+        'normal - (1s de timeout) - Recomendação PADRÃO.\n'
+        'slow - (3s de timeout) - Recomendado para PAGINAS WEB com respostas lenta\n\n'
         '-=- EXEMPLO -=-\n'
-        '/scan seusite.com.br -p default -m fast\n'
+        '/scan seusite.com.br -p default -m normal\n'
         '      ou 192.168.0.X\n'
     )
 
 
 def p_scan(_HOST, _PORT, _TIMEOUT):
+    data = None
     try:
         for i in range(len(_PORT)):
             if len(_PORT) <= 0:
                 return
 
+            # Tentando conectar via TCP/IP
             try:
                 soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 soc.settimeout(_TIMEOUT)
@@ -80,10 +82,24 @@ def p_scan(_HOST, _PORT, _TIMEOUT):
                 _PORTS_OPEN.append(_PORT[i])
                 soc.close()
             except:
-                pass
+                # Tentando conectar via UDP
+                try:
+                    print('Tentando UDP')
+                    soc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                    soc.settimeout(_TIMEOUT)
+                    # print('Scaneando porta [{}]'.format(_PORT[i]))
+                    conn = soc.connect((_HOST, _PORT[i]))
+                    data = conn.recv[1024]
+                    # service = socket.getservbyport(_PORT[i])
+                    print('UDP deu CERTO !!!!!!!!!')
+                    _PORTS_OPEN.append(_PORT[i])
+                    soc.close()
+
+                except:
+                    print('udp falhou')
+                    pass
     except:
         print('Error ao realizar scan!!!')
-
 
 def divider(lista):
     parts = []
@@ -299,6 +315,7 @@ if __name__ == "__main__":
         if data[:5] == '/scan':
             menuExibir()
             host, p, port, m, modo = data[6:].split()  # Divido a Entrada para tratar cada parte
+            # print('{}\n{}\n{}\n{}\n{}'.format(host, p, port, m, modo))
             # ativo = ping_host(host)  # Verifico se o Host está ativo antes de começar
 
             # Se estiver ativo, ele começa a Scanear
@@ -324,11 +341,13 @@ if __name__ == "__main__":
                     elif port == 'all':
                         port = _PORT_ALL
                     elif p == '-p':
-                        port = port[3:len(port) - 1].split(',')
+                        # port = port[3:len(port) - 1].split(',')
+                        port = port.split(',')
                         port_div = []
                         for i in range(len(port)):
                             port_div.append(int(port[i]))
                         port = port_div
+                        print(port)
                     else:
                         print('Erro na declaração das portas!\nDuvidas digite /help.')
                         continue
@@ -336,13 +355,23 @@ if __name__ == "__main__":
                     # Verificando o modo selecionado
                     if m == '-m':
                         if modo == 'normal':
-                            timeout = 1.5
-                        elif modo == 'fast':
                             timeout = 1
+                        elif modo == 'fast':
+                            timeout = 0.2
                         elif modo == 'slow':
-                            timeout = 4
+                            timeout = 3
                         else:
                             print('Modo "{}" não existe!\nDuvidas digite /help.'.format(modo))
+
+                        # print('len de Ports {}'.format(len(port)))
+
+                        # Aqui eu verifico o tanto de portas para não criar threads atoa.
+                        if len(port) <= os.cpu_count() * 2:
+                            _N_THREADS = len(port)
+
+                        elif len(port) > os.cpu_count() * 2:
+                            _N_THREADS = os.cpu_count() * 2
+
                     else:
                         print('Erro na declaração dos modos!\nDuvidas digite /help.')
                         continue
@@ -368,8 +397,10 @@ if __name__ == "__main__":
 
                 th = []  # limpo o vetor de threads para poder reutiliza-lo
 
+                # time.sleep(5)
                 exibir(host_name_ip, _PORTS_OPEN, t_total)
                 _PORTS_OPEN = []  # Limpando vetor para reutilizar na proxima interação
+                _N_THREADS = os.cpu_count()  # Resetando o vetor de Threads
 
             else:
-                print('Tente novamente...')
+                print('Falha geral! Contate o suporte!\n"la garantía soy yo."')
