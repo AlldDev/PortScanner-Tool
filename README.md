@@ -3,7 +3,7 @@
 ![Screenshot ](assets/icon.ico)
 
 ##Sobre:
-> lorem ipsum
+> Simples Ferramenta para Scan de Redes !
 
 ##Detalhes:
 > lorem ipsum
