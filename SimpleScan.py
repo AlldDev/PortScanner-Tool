@@ -6,6 +6,7 @@ import sys
 import os
 import subprocess
 import time
+import pandas as pd
 
 # from typing import List, Any
 
@@ -22,6 +23,7 @@ _PORT_ALL = range(1, 65536)
 _PORTS_INPUT = []
 _PORTS_OPEN = []
 _N_THREADS = (os.cpu_count()) * 2
+_DF = pd.read_csv('service-names-port-numbers.csv', sep=',', index_col='Port Number')
 
 
 # FUNCTIONs #########################################################
@@ -66,6 +68,7 @@ def menuHelp():
 
 
 def p_scan(_HOST, _PORT, _TIMEOUT):
+    global _PORTS_OPEN
     data = None
     try:
         for i in range(len(_PORT)):
@@ -84,24 +87,24 @@ def p_scan(_HOST, _PORT, _TIMEOUT):
             except:
                 # Tentando conectar via UDP
                 try:
-                    print('Tentando UDP')
+                    # print('Tentando UDP')
                     soc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                     soc.settimeout(_TIMEOUT)
                     # print('Scaneando porta [{}]'.format(_PORT[i]))
                     conn = soc.connect((_HOST, _PORT[i]))
-                    data = conn.recv[1024]
+                    data = conn.recv(1024)
                     # service = socket.getservbyport(_PORT[i])
-                    print('UDP deu CERTO !!!!!!!!!')
                     _PORTS_OPEN.append(_PORT[i])
                     soc.close()
-
                 except:
-                    print('udp falhou')
                     pass
     except:
         print('Error ao realizar scan!!!')
 
+
 def divider(lista):
+    global _N_THREADS
+
     parts = []
     tam_lista = len(lista)
 
@@ -113,32 +116,43 @@ def divider(lista):
     return parts
 
 
-def exibir(host, _PORTS_OPEN, t_total):
-    menuExibir()
-
+def exibir(host, t_total):
+    global _DF
+    global _PORTS_OPEN
     tam = len(_PORTS_OPEN)
     _PORTS_OPEN.sort()
+    menuExibir()
 
     if tam <= 0:
         print('Nenhuma porta aberta foi identificada! (Alguns endereços precisam de um timeout maior).')
     else:
         print('Host: {}\n'.format(host))
         print('[STATUS] [PORTA]   [SERVIÇO EXECUTANDO]\n')
+
         for i in range(tam):
-            if _PORTS_OPEN[i] in protocols:
-                print('[Aberta] [{}] - {}'.format(_PORTS_OPEN[i], protocols[_PORTS_OPEN[i]]))
-            else:
+            try:
+                STR_PORT = str(_PORTS_OPEN[i])
+                ports_open = _DF.loc[STR_PORT, ['Description']]
+                dict_open = ports_open.to_dict(orient='records')
+
+                for item in dict_open:
+                    for _, value in item.items():
+                        desc = value
+                        break
+                    break
+                print('[Aberta] [{}] - {}'.format(_PORTS_OPEN[i], desc))
+            except:
                 try:
                     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    soc.settimeout(3)
+                    soc.settimeout(1)
                     conn = soc.connect((host, _PORTS_OPEN[i]))
-                    service = socket.getservbyport(_PORTS_OPEN[i])
+                    service = (conn.getservbyport(_PORTS_OPEN[i]))
                     print('[Aberta] [{}] - {}'.format(service))
                     soc.close()
                 except:
                     print('[Aberta] [{}] - Não identificada'.format(_PORTS_OPEN[i]))
-    print('\nScan concluido em {:.2f} segundos!'.format(t_total))
-    _PORTS_OPEN = []  # Zerando o vetor para uma proxima verificação
+        print('\nScan concluido em {:.2f} segundos!'.format(t_total))
+        _PORTS_OPEN = []  # Zerando o vetor para uma proxima verificação
 
 
 def get_ip(host):
@@ -293,6 +307,8 @@ if __name__ == "__main__":
         9418: "Git",
         9050: "Proxy TOR", }
 
+    #df = pd.read_csv('service-names-port-numbers.csv', sep=',', index_col='Port Number')
+
     th = []
 
     menuExibir()
@@ -398,7 +414,7 @@ if __name__ == "__main__":
                 th = []  # limpo o vetor de threads para poder reutiliza-lo
 
                 # time.sleep(5)
-                exibir(host_name_ip, _PORTS_OPEN, t_total)
+                exibir(host_name_ip, t_total)
                 _PORTS_OPEN = []  # Limpando vetor para reutilizar na proxima interação
                 _N_THREADS = os.cpu_count()  # Resetando o vetor de Threads
 
