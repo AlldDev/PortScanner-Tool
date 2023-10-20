@@ -1,14 +1,14 @@
 # SimpleScan
 
-![Screenshot ](icon.ico)
+![Screenshot ](assets/icon.ico)
 
-**Sobre:**
+##Sobre:
 > lorem ipsum
 
-**Detalhes:**
+##Detalhes:
 > lorem ipsum
 
-**Comandos:**
+##Comandos:
 > lorem ipsum
 
 > [!IMPORTANT]
