@@ -131,22 +131,20 @@ def exibir(host, t_total):
 
         for i in range(tam):
             try:
-                STR_PORT = str(_PORTS_OPEN[i])
-                ports_open = _DF.loc[STR_PORT, ['Description']]
-                dict_open = ports_open.to_dict(orient='records')
+                #STR_PORT = str(_PORTS_OPEN[i])
 
-                for item in dict_open:
-                    for _, value in item.items():
-                        desc = value
-                        break
-                    break
+                desc = _DF.loc[str(_PORTS_OPEN[i]), ['Description']].iloc[1].iloc[0]
+
                 print('[Aberta] [{}] - {}'.format(_PORTS_OPEN[i], desc))
+
+
             except:
                 try:
+                    #print('Tentando descobrir serviço...')
                     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    soc.settimeout(1)
+                    soc.settimeout(3)
                     conn = soc.connect((host, _PORTS_OPEN[i]))
-                    service = (conn.getservbyport(_PORTS_OPEN[i]))
+                    service = (socket.getservbyport(_PORTS_OPEN[i]))
                     print('[Aberta] [{}] - {}'.format(service))
                     soc.close()
                 except:
@@ -184,131 +182,6 @@ def ping_host(host):
 # MAIN ##############################################################
 if __name__ == "__main__":
     # Variaveis
-    protocols = {
-        20: "FTP (File Transfer Protocol - Data)",
-        21: "FTP (File Transfer Protocol - Control)",
-        22: "SSH (Secure Shell)",
-        23: "Telnet (acesso remoto não seguro)",
-        25: "SMTP (Simple Mail Transfer Protocol)",
-        53: "DNS (Domain Name System)",
-        67: "DHCP (Dynamic Host Configuration Protocol)",
-        68: "DHCP (Dynamic Host Configuration Protocol)",
-        69: "TFTP (Trivial File Transfer Protocol)",
-        80: "HTTP (Hypertext Transfer Protocol)",
-        88: "Kerberos",
-        110: "POP3 (Post Office Protocol, versão 3)",
-        111: "RPC (Remote Procedure Call)",
-        119: "NNTP (Network News Transfer Protocol)",
-        123: "NTP (Network Time Protocol)",
-        135: "MS RPC (Microsoft Remote Procedure Call)",
-        137: "NetBIOS",
-        138: "NetBIOS",
-        139: "NetBIOS",
-        143: "IMAP (Internet Message Access Protocol)",
-        161: "SNMP (Simple Network Management Protocol)",
-        162: "SNMP (Simple Network Management Protocol)",
-        389: "LDAP (Lightweight Directory Access Protocol)",
-        443: "HTTPS (HTTP Secure)",
-        445: "Microsoft-DS (Microsoft Directory Services)",
-        465: "SMTP com SSL/TLS",
-        514: "Syslog (Protocolo de registro de sistema)",
-        515: "LPD (Line Printer Daemon)",
-        587: "Submission (envio seguro de e-mails)",
-        636: "LDAPS (LDAP com segurança)",
-        993: "IMAP com SSL/TLS",
-        995: "POP3 com SSL/TLS",
-        1080: "SOCKS (Proxy de rede)",
-        1099: "RMI (Java Remote Method Invocation)",
-        1433: "MSSQL (Microsoft SQL Server)",
-        6660: "Internet Relay Chat (IRC)",
-        6661: "Internet Relay Chat (IRC)",
-        6665: "Internet Relay Chat (IRC)",
-        6666: "Internet Relay Chat (IRC)",
-        6667: "Internet Relay Chat (IRC)",
-        6668: "Internet Relay Chat (IRC)",
-        6669: "Internet Relay Chat (IRC)",
-        6697: "Internet Relay Chat (IRC)",
-        8000: "HTTP alternativo",
-        8008: "HTTP alternativo",
-        8443: "HTTPS alternativo",
-        1521: "Oracle Database",
-        3306: "MySQL",
-        5432: "PostgreSQL",
-        5900: "VNC (Virtual Network Computing)",
-        9100: "JetDirect (HP JetDirect)",
-        49152: "Backdoor Diamond (proposta pelo IANA)",
-        1: "TCPMUX - Serviço de porta TCP",
-        5: "RJE - Entrada remota de trabalho",
-        7: "ECHO - Protocolo de eco",
-        11: "SYSTAT - Listagem de status de sistema",
-        17: "QOTD - Citação do dia",
-        43: "WHOIS - Serviço de informações de nome de domínio",
-        77: "RJE - Entrada remota de trabalho",
-        101: "NIC Host Name",
-        102: "ISO-TSAP - Protocolo de acesso a serviços de transporte",
-        103: "gopher - Protocolo Gopher",
-        109: "POP2 - Post Office Protocol, versão 2",
-        115: "SFTP - Protocolo simples de transferência de arquivos",
-        118: "SQL Serviços alternativos",
-        427: "SLP - Protocolo de localização de serviços",
-        513: "rlogin - Login remoto",
-        540: "UUCP - Protocolo UUCP",
-        554: "RTSP - Protocolo de streaming em tempo real",
-        902: "VMware Server Console",
-        989: "FTPS - FTP com SSL",
-        992: "Telnet com SSL",
-        1026: "IIS",
-        1027: "IIS",
-        1028: "IIS",
-        1029: "IIS",
-        1110: "NFS",
-        1725: "Steam",
-        1741: "CiscoWorks 2000",
-        2179: "Microsoft Firewall Storage",
-        179: "BGP (Border Gateway Protocol)",
-        194: "IRC (Internet Relay Chat)",
-        1025: "NFS ou IIS ou portas de RPC",
-        1701: "L2TP (Layer 2 Tunneling Protocol)",
-        2049: "NFS - Protocolo de sistema de arquivos em rede",
-        3128: "Squid (HTTP Proxy)",
-        3389: "RDP - Protocolo de área de trabalho remota",
-        5631: "pcAnywhere",
-        5632: "pcAnywhere",
-        5901: "VNC (Virtual Network Computing)",
-        6346: "Gnutella (File Sharing)",
-        6347: "Gnutella (File Sharing)",
-        6881: "BitTorrent",
-        6882: "BitTorrent",
-        6883: "BitTorrent",
-        6884: "BitTorrent",
-        6885: "BitTorrent",
-        6886: "BitTorrent",
-        6887: "BitTorrent",
-        6888: "BitTorrent",
-        6889: "BitTorrent",
-        6969: "BitTorrent",
-        7000: "Default para UPnP (Universal Plug and Play)",
-        9000: "CSlistener (Java RMI)",
-        9999: "HTTP alternativo",
-        10000: "Webmin",
-        10255: "Kubernetes API Server",
-        11211: "Memcached",
-        27017: "MongoDB",
-        28015: "RethinkDB",
-        50000: "Default para League of Legends (LoL)",
-        50070: "Hadoop",
-        50075: "Hadoop",
-        50090: "Hadoop",
-        60000: "Deep Discovery",
-        6379: "Redis",
-        8080: "HTTP alternativo",
-        8081: "HTTP alternativo",
-        8888: "HTTP alternativo",
-        9418: "Git",
-        9050: "Proxy TOR", }
-
-    #df = pd.read_csv('service-names-port-numbers.csv', sep=',', index_col='Port Number')
-
     th = []
 
     menuExibir()
