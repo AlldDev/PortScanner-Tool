@@ -7,6 +7,7 @@ import os
 import subprocess
 import time
 import pandas as pd
+import numpy as np
 
 # from typing import List, Any
 
@@ -23,7 +24,15 @@ _PORT_ALL = range(1, 65536)
 _PORTS_INPUT = []
 _PORTS_OPEN = []
 _N_THREADS = (os.cpu_count()) * 2
-_DF = pd.read_csv('service-names-port-numbers.csv', sep=',', index_col='Port Number')
+_DF = pd.read_csv('services-port.csv', sep=',', index_col='Port Number')
+#print(_DF)
+#_DF = _DF['Port Number'].replace('', np.nan, inplace=True)
+#print(_DF)
+#time.sleep(50)
+#_DF.dropna(subset=['Port Number'], inplace=True)
+#print(_DF)
+#time.sleep(50)
+#_DF.sort_values(by=['Port Number'])
 
 
 # FUNCTIONs #########################################################
