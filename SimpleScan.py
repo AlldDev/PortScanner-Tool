@@ -4,12 +4,11 @@ import selectors
 import threading
 import sys
 import os
-import subprocess
+#import subprocess
 import time
 import pandas as pd
 import numpy as np
 
-# from typing import List, Any
 
 # VAR GLOBALs #######################################################
 _PORT_DEFAULT = [
@@ -154,7 +153,7 @@ def exibir(host, t_total):
                     soc.settimeout(3)
                     conn = soc.connect((host, _PORTS_OPEN[i]))
                     service = (socket.getservbyport(_PORTS_OPEN[i]))
-                    print('[Aberta] [{}] - {}'.format(service))
+                    print('[Aberta] [{}] - {}'.format(host, service))
                     soc.close()
                 except:
                     print('[Aberta] [{}] - Não identificada'.format(_PORTS_OPEN[i]))
@@ -173,19 +172,19 @@ def get_ip(host):
 # Função não utilizada, pois alguns hosts não responde ao ping
 # com isso, deixamos de scanear... então decidi não utilizar mais
 # o ping antes, fazendo o Scan direto...
-def ping_host(host):
-    if sys.platform.startswith('win'):
-        cmd = ['ping', '-n', '1', host]
-    else:
-        cmd = ['ping', '-c', '1', host]
+#def ping_host(host):
+    #if sys.platform.startswith('win'):
+        #cmd = ['ping', '-n', '1', host]
+    #else:
+        #cmd = ['ping', '-c', '1', host]
 
-    try:
-        output = subprocess.check_output(cmd)
-        print('Host {} ativo.'.format(host))
-        return True
-    except:
-        print('Host {} não acessivel.'.format(host))
-        return False
+    #try:
+        #output = subprocess.check_output(cmd)
+        #print('Host {} ativo.'.format(host))
+        #return True
+    #except:
+        #print('Host {} não acessivel.'.format(host))
+        #return False
 
 
 # MAIN ##############################################################
