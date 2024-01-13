@@ -71,8 +71,7 @@ def menuExibir():
 def menuHelp():
     os.system('cls||clear')
     menuExibir()
-    print(f'''
-{cores['vermelho']}* MODO DE UTILIZAR{cores['limpar']}
+    print(f'''{cores['vermelho']}* MODO DE UTILIZAR{cores['limpar']}
 /scan {cores['verde']}<alvo>{cores['limpar']} -p {cores['azul']}<porta>{cores['limpar']} -m {cores['magenta']}<modo>{cores['limpar']}
 
 {cores['verde']}<alvo>{cores['limpar']}  - IP ou Domínio.
@@ -87,10 +86,7 @@ def menuHelp():
           {cores['amarelo']}normal{cores['limpar']} - (1s de timeout) - Recomendação PADRÃO.
           {cores['amarelo']}slow{cores['limpar']} - (3s de timeout) - Recomendado para PAGINAS WEB com respostas lenta
 {cores['vermelho']}* EXEMPLO{cores['limpar']}
-/scan {cores['verde']}seusite.com.br{cores['limpar']} -p {cores['azul']}default{cores['limpar']} -m {cores['magenta']}normal{cores['limpar']}
-        |
-    ou {cores['verde']}192.168.0.X{cores['limpar']}''')
-
+/scan {cores['verde']}seusite.com.br{cores['limpar']} -p {cores['azul']}default{cores['limpar']} -m {cores['magenta']}normal{cores['limpar']}''')
 
 def p_scan(_HOST, _PORT, _TIMEOUT):
     global _PORTS_OPEN
@@ -112,10 +108,8 @@ def p_scan(_HOST, _PORT, _TIMEOUT):
             except:
                 # Tentando conectar via UDP
                 try:
-                    # print('Tentando UDP')
                     soc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                     soc.settimeout(_TIMEOUT)
-                    # print('Scaneando porta [{}]'.format(_PORT[i]))
                     conn = soc.connect((_HOST, _PORT[i]))
                     data = conn.recv(1024)
                     # service = socket.getservbyport(_PORT[i])
@@ -124,7 +118,7 @@ def p_scan(_HOST, _PORT, _TIMEOUT):
                 except:
                     pass
     except:
-        print('Error ao realizar scan!!!')
+        print(f'''{cores['vermelho']}Error ao realizar scan!!!{cores['limpar']}''')
 
 
 def divider(lista):
@@ -149,10 +143,12 @@ def exibir(host, t_total):
     menuExibir()
 
     if tam <= 0:
-        print('Nenhuma porta aberta foi identificada! (Alguns endereços precisam de um timeout maior).')
+        print(f'''{cores['vermelho']}Nenhuma porta aberta foi identificada! (Alguns endereços precisam de um timeout maior).{cores['limpar']}''')
     else:
-        print('Host: {}\n'.format(host))
-        print('[STATUS] [PORTA]   [SERVIÇO EXECUTANDO]\n')
+        print(f'''{cores['amarelo']}Target: {host}
+
+{cores['vermelho']}[STATUS] [PORTA]   [SERVIÇO EXECUTANDO]{cores['limpar']}''')
+
 
         for i in range(tam):
             try:
@@ -160,7 +156,7 @@ def exibir(host, t_total):
 
                 desc = _DF.loc[str(_PORTS_OPEN[i]), ['Description']].iloc[1].iloc[0]
 
-                print('[Aberta] [{}] - {}'.format(_PORTS_OPEN[i], desc))
+                print(f'''{cores['vermelho']}[{cores['verde']}Aberta{cores['vermelho']}] [{cores['verde']}{_PORTS_OPEN[i]}{cores['vermelho']}] - {cores['verde']}{desc}{cores['limpar']}''')
 
 
             except:
@@ -170,11 +166,11 @@ def exibir(host, t_total):
                     soc.settimeout(3)
                     conn = soc.connect((host, _PORTS_OPEN[i]))
                     service = (socket.getservbyport(_PORTS_OPEN[i]))
-                    print('[Aberta] [{}] - {}'.format(host, service))
+                    print(f'[Aberta] [{host}] - {service}')
                     soc.close()
                 except:
-                    print('[Aberta] [{}] - Não identificada'.format(_PORTS_OPEN[i]))
-        print('\nScan concluido em {:.2f} segundos!'.format(t_total))
+                    print(f'''{cores['vermelho']}[{cores['verde']}Aberta{cores['vermelho']}] [{cores['verde']}{_PORTS_OPEN[i]}{cores['vermelho']}] - {cores['verde']}Não identificada{cores['limpar']}''')
+        print('\n{}Scan concluido em {:.2f} segundos!{}'.format(cores['amarelo'], t_total, cores['limpar']))
         _PORTS_OPEN = []  # Zerando o vetor para uma proxima verificação
 
 
@@ -215,7 +211,7 @@ if __name__ == "__main__":
     # Loop Principal
     #####################
     while True:
-        print('attack>')
+        print('scan>')
         data = sys.stdin.readline()
 
         # Se precisar de ajuda.
@@ -225,23 +221,22 @@ if __name__ == "__main__":
         # Se quiser fechar o sistema de maneira correta
         if data[:5] == '/exit':
             menuExibir()
-            print('Espero vê-lo em breve !!! Até mais ;D')
+            print(f'''{cores['azul']}Espero vê-lo em breve !!! Até mais ;D{cores['limpar']}''')
             sys.exit()
 
         # Para começar o Scan
         if data[:5] == '/scan':
             menuExibir()
             host, p, port, m, modo = data[6:].split()  # Divido a Entrada para tratar cada parte
-            # print('{}\n{}\n{}\n{}\n{}'.format(host, p, port, m, modo))
-            # ativo = ping_host(host)  # Verifico se o Host está ativo antes de começar
 
+            # ativo = ping_host(host)  # Verifico se o Host está ativo antes de começar
             # Se estiver ativo, ele começa a Scanear
             # (Desativado, Muitos hosts não responde Ping... deixei apenas if True para se um dia quiser voltar...)
             if True:
-                print('Iniciando Serviços...')
+                print(f'''{cores['vermelho']}Iniciando Serviços...{cores['limpar']}''')
                 try:
                     # host, port = data[6:].split(' ', 2)
-                    print('Scaneando Host {}.\nPor favor, Aguarde...'.format(host))
+                    print(f'''{cores['vermelho']}Scaneando Host {host}.\nPor favor, Aguarde...{cores['limpar']}''')
                     host_ip = get_ip(host)  # Aqui ele pega o IP caso o usuário tenha passado um Dominio
 
                     # Apenas Verifico para quando exibir aparecer o IP, ou se for dominio
@@ -264,21 +259,21 @@ if __name__ == "__main__":
                         for i in range(len(port)):
                             port_div.append(int(port[i]))
                         port = port_div
-                        print(port)
+                        #print(port)
                     else:
-                        print('Erro na declaração das portas!\nDuvidas digite /help.')
+                        print(f'''{cores['vermelho']}Erro na declaração das portas!\nDuvidas digite /help.''')
                         continue
 
                     # Verificando o modo selecionado
                     if m == '-m':
                         if modo == 'normal':
-                            timeout = 1
+                            timeout = 0.5
                         elif modo == 'fast':
                             timeout = 0.2
                         elif modo == 'slow':
-                            timeout = 3
+                            timeout = 2
                         else:
-                            print('Modo "{}" não existe!\nDuvidas digite /help.'.format(modo))
+                            print(f'''{cores['vermelho']}Modo "{modo}" não existe!\nDuvidas digite /help.{cores['limpar']}''')
 
                         # print('len de Ports {}'.format(len(port)))
 
@@ -290,24 +285,22 @@ if __name__ == "__main__":
                             _N_THREADS = os.cpu_count() * 2
 
                     else:
-                        print('Erro na declaração dos modos!\nDuvidas digite /help.')
+                        print(f'''{cores['vermelho']}Erro na declaração dos modos!\nDuvidas digite /help.{cores['limpar']}''')
                         continue
 
                 except:
-                    print('Erro na entrada!\nDuvidas digite /help.')
+                    print(f'''{cores['vermelho']}Erro na entrada!\nDuvidas digite /help.{cores['limpar']}''')
                     continue
 
                 ports = divider(port)  # Dividindo as portas pelo número de threads
 
                 t_inicio = time.time()
                 for i in range(_N_THREADS):
-                    # print('Thread {} Iniciada...'.format(i))
                     th.append(threading.Thread(
                         target=p_scan, args=(host_ip, ports[i], timeout)))
                     th[i].start()
 
                 for i in range(len(th)):
-                    # print('Aguardando Thread {} Terminar'.format(i))
                     th[i].join()
                 t_fim = time.time()
                 t_total = t_fim - t_inicio
@@ -320,4 +313,4 @@ if __name__ == "__main__":
                 _N_THREADS = os.cpu_count()  # Resetando o vetor de Threads
 
             else:
-                print('Falha geral! Contate o suporte!\n"la garantía soy yo."')
+                print(f'''{cores['vermelho']}Falha geral! Contate o suporte!\n"la garantía soy yo."{cores['limpar']}''')
