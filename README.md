@@ -4,33 +4,46 @@
 
 ![Screenshot ](https://github.com/AlldDev/PortScanner-Tool/blob/main/assets/portscanner_02.png)
 
-## Sobre:
-> Uma simples ferramenta para scan de redes !
+Uma ferramenta simples para realizar varreduras de portas em redes e infraestruturas de T.I.
 
-## Detalhes:
-Ferramenta desenvolvida pensando no auxilio ao suporte em Redes e Infraestruturas de T.I e derivados, Nada mais é do que um Portscan (Scaneador de Portas) que realiza uma varredura no Host especificado em busca de Portas e Protocolos, Podendo ser util para o descobrimento de vulnerabilidades no seu Host/servidor, conseguindo identifica-las e posteriormente as corrigir (manualmente).
+## Detalhes
 
-## Comandos:
-> MODO DE UTILIZAR<br>
-> /scan (alvo) -p (porta) -m (modo)<br>
-> -----------------------------------------------------------------------<br>
-> (alvo) - IP ou Domínio.<br>
-> -----------------------------------------------------------------------<br>
-> (porta) -> Portas ou Protocolo\n'
-> Portas Especificas separar por Virgula (ex: 80,443,9050).<br>
-> default - Scaneia as 30 principais portas.<br>
-> all - Scaneia as 65536 portas, (Pode demorar um pouco).<br>
-> -----------------------------------------------------------------------<br>
-> (modo) -> Seleciona o timeout (Muito util).<br>
-> fast - (0.2s de timeout) - Recomendado para REDES LOCAIS.<br>
-> normal - (1s de timeout) - Recomendação PADRÃO.<br>
-> slow - (3s de timeout) - Recomendado para PAGINAS WEB com respostas lenta<br><br>
-> EXEMPLO<br>
-> /scan seusite.com.br -p default -m normal<br>
->       ou 192.168.0.X<br>
+A ferramenta foi desenvolvida com o objetivo de auxiliar o suporte em Redes e Infraestruturas de T.I. Ela funciona como um Portscan (Scanner de Portas), realizando varreduras em um host especificado em busca de portas e protocolos. Pode ser útil para descobrir vulnerabilidades em seu host/servidor, permitindo identificá-las e corrigi-las manualmente.
 
-> [!NOTE]
-> Pode haver alguns BUGs, fique a vontade para modificar o arquivo e subir um PushRequest se necessario! (GLP 3.0)
+## Comandos
 
-> [!IMPORTANT]
-> Se for gerar um executável com o Pyinstaller, certifique-se que o CSV esteja compactado junto com o EXE, ou que ele esteja na mesma pasta de execução do mesmo.
+### Parâmetros
+- **(alvo):** IP ou Domínio.
+- **(porta):** Portas ou Protocolo. Para portas específicas, separar por vírgula (ex: 80,443,9050). Para escanear as 30 principais portas, use "default". Para escanear todas as 65536 portas, use "all".
+- **(modo):** Seleciona o timeout.
+  - **fast:** 0.2s de timeout, recomendado para REDES LOCAIS.
+  - **normal:** 0.5s de timeout, recomendação PADRÃO.
+  - **slow:** 2s de timeout, recomendado para PÁGINAS WEB com respostas lentas.
+
+### Exemplo
+/scan seusite.com.br -p default -m normal
+
+### Explicações Adicionais
+- O parâmetro **(alvo)** aceita tanto endereços IP quanto domínios. Certifique-se de inserir corretamente o alvo que deseja escanear.
+- Para o parâmetro **(porta)**, você pode especificar portas individuais ou faixas de portas separadas por vírgula. Se usar "default", serão escaneadas as 30 principais portas. Se usar "all", serão escaneadas todas as 65536 portas (pode demorar).
+- O parâmetro **(modo)** determina o tempo limite (timeout) para cada porta escaneada. Escolha o modo de acordo com a natureza da sua rede.
+
+## Uso Ético
+
+Esta ferramenta destina-se a ser usada de maneira ética e responsável. Ao usá-la, você concorda em:
+
+1. **Respeitar a Privacidade:** Não use esta ferramenta para acessar informações sem permissão explícita.
+2. **Conformidade Legal:** Certifique-se de estar em conformidade com todas as leis e regulamentações locais e internacionais ao utilizar esta ferramenta.
+3. **Responsabilidade:** Você é o único responsável pelo uso desta ferramenta. Não a utilize para atividades maliciosas ou prejudiciais.
+
+## Nota
+
+Pode haver alguns bugs. Sinta-se à vontade para modificar o arquivo e enviar um Pull Request se necessário! (GLP 3.0)
+
+## Importante
+
+Se for gerar um executável com o Pyinstaller, certifique-se de que o CSV esteja compactado junto com o EXE, ou que ele esteja na mesma pasta de execução do mesmo.
+
+## Licença
+
+Este projeto está licenciado sob a [GNU General Public License v3.0](https://github.com/AlldDev/PortScanner-Tool/blob/main/LICENSE). Consulte o arquivo [LICENSE.md] para obter mais detalhes.
