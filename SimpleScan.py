@@ -1,4 +1,6 @@
-# IMPORTs ###########################################################
+###########################################################
+# IMPORTs
+###########################################################
 import socket
 import selectors
 import threading
@@ -9,8 +11,24 @@ import time
 import pandas as pd
 import numpy as np
 
+###########################################################
+# CORES
+###########################################################
+cores = {
+    "limpar": "\033[m",
+    "branco": "\033[1;30m",
+    "vermelho": "\033[1;31m",
+    "verde": "\033[1;32m",
+    "amarelo": "\033[1;33m",
+    "azul": "\033[1;34m",
+    "magenta": "\033[1;35m",
+    "ciano": "\033[1;36m",
+    "cinza": "\033[1;37m",
+}
 
-# VAR GLOBALs #######################################################
+###########################################################
+# VAR GLOBALs
+###########################################################
 _PORT_DEFAULT = [
     20, 21, 22, 23, 25, 53, 67, 68, 69, 80, 88, 110, 111, 119, 123, 135, 137, 138, 139, 143,
     161, 162, 179, 194, 389, 443, 445, 465, 514, 515, 587, 636, 993, 995, 1080, 1099, 1433,
@@ -33,46 +51,45 @@ _DF = pd.read_csv('services-port.csv', sep=',', index_col='Port Number')
 #time.sleep(50)
 #_DF.sort_values(by=['Port Number'])
 
-
-# FUNCTIONs #########################################################
+###########################################################
+# FUNCTIONs
+###########################################################
 def menuExibir():
     os.system('cls||clear')
-    print(
-        '  ████████ ██                      ██            ████████                           \n'
-        ' ██░░░░░░ ░░              ██████  ░██           ██░░░░░░                            \n'
-        '░██        ██ ██████████ ░██░░░██ ░██  █████   ░██         █████   ██████   ███████ \n'
-        '░█████████░██░░██░░██░░██░██  ░██ ░██ ██░░░██  ░█████████ ██░░░██ ░░░░░░██ ░░██░░░██\n'
-        '░░░░░░░░██░██ ░██ ░██ ░██░██████  ░██░███████  ░░░░░░░░██░██  ░░   ███████  ░██  ░██\n'
-        '       ░██░██ ░██ ░██ ░██░██░░░   ░██░██░░░░          ░██░██   ██ ██░░░░██  ░██  ░██\n'
-        ' ████████ ░██ ███ ░██ ░██░██      ███░░██████   ████████ ░░█████ ░░████████ ███  ░██\n'
-        '░░░░░░░░  ░░ ░░░  ░░  ░░ ░░      ░░░  ░░░░░░   ░░░░░░░░   ░░░░░   ░░░░░░░░ ░░░   ░░ \n'
-        '             -=- Uma simples ferramenta de scan -=- Leia o README.md -=-            \n'
-        '                       -=- Precisa de ajuda? digite /help -=-                       \n'
-    )
+    print(f'''
+{cores['vermelho']}██████╗  ██████╗ ██████╗ ████████╗{cores['vermelho']}███████╗ ██████╗ █████╗ ███╗   ██╗███╗   ██╗███████╗██████╗
+{cores['magenta']}██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝{cores['magenta']}██╔════╝██╔════╝██╔══██╗████╗  ██║████╗  ██║██╔════╝██╔══██╗
+{cores['magenta']}██████╔╝██║   ██║██████╔╝   ██║   {cores['magenta']}███████╗██║     ███████║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝
+{cores['vermelho']}██╔═══╝ ██║   ██║██╔══██╗   ██║   {cores['vermelho']}╚════██║██║     ██╔══██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗
+{cores['vermelho']}██║     ╚██████╔╝██║  ██║   ██║   {cores['vermelho']}███████║╚██████╗██║  ██║██║ ╚████║██║ ╚████║███████╗██║  ██║
+{cores['vermelho']}╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   {cores['vermelho']}╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
+{cores['vermelho']}by github.com/AlldDev{cores['ciano']}
+{cores['vermelho']}duvidas? -> /help{cores['ciano']}
+{cores['limpar']}''')
 
 
 def menuHelp():
     os.system('cls||clear')
     menuExibir()
-    print(
-        '-=-MODO DE UTILIZAR -=-\n'
-        '/scan <alvo> -p <porta> -m <modo>\n'
-        '-------------------------------------------------------------\n'
-        '<alvo> - IP ou Domínio.\n'
-        '-------------------------------------------------------------\n'
-        '<porta> -> Portas ou Protocolo\n'
-        'Portas Especificas separar por Virgula (ex: 80,443,9050).\n'
-        'default - Scaneia as 30 principais portas.\n'
-        'all - Scaneia as 65536 portas, (Pode demorar um pouco).\n'
-        '--------------------------------------------------------------\n'
-        '<modo> -> Seleciona o timeout (Muito util)\n'
-        'fast - (0.2s de timeout) - Recomendado para REDES LOCAIS.\n'
-        'normal - (1s de timeout) - Recomendação PADRÃO.\n'
-        'slow - (3s de timeout) - Recomendado para PAGINAS WEB com respostas lenta\n\n'
-        '-=- EXEMPLO -=-\n'
-        '/scan seusite.com.br -p default -m normal\n'
-        '      ou 192.168.0.X\n'
-    )
+    print(f'''
+{cores['vermelho']}* MODO DE UTILIZAR{cores['limpar']}
+/scan {cores['verde']}<alvo>{cores['limpar']} -p {cores['azul']}<porta>{cores['limpar']} -m {cores['magenta']}<modo>{cores['limpar']}
+
+{cores['verde']}<alvo>{cores['limpar']}  - IP ou Domínio.
+
+{cores['azul']}<porta>{cores['limpar']} - Portas ou Protocolo
+          Portas Especificas separar por Virgula (ex: 80,443,9050).
+          {cores['amarelo']}default{cores['limpar']} - Scaneia as 30 principais portas.
+          {cores['amarelo']}all{cores['limpar']} - Scaneia as 65536 portas, (Pode demorar um pouco).
+
+{cores['magenta']}<modo>{cores['limpar']}  - Seleciona o timeout (Muito util)
+          {cores['amarelo']}fast{cores['limpar']} - (0.2s de timeout) - Recomendado para REDES LOCAIS.
+          {cores['amarelo']}normal{cores['limpar']} - (1s de timeout) - Recomendação PADRÃO.
+          {cores['amarelo']}slow{cores['limpar']} - (3s de timeout) - Recomendado para PAGINAS WEB com respostas lenta
+{cores['vermelho']}* EXEMPLO{cores['limpar']}
+/scan {cores['verde']}seusite.com.br{cores['limpar']} -p {cores['azul']}default{cores['limpar']} -m {cores['magenta']}normal{cores['limpar']}
+        |
+    ou {cores['verde']}192.168.0.X{cores['limpar']}''')
 
 
 def p_scan(_HOST, _PORT, _TIMEOUT):
@@ -186,16 +203,19 @@ def get_ip(host):
         #print('Host {} não acessivel.'.format(host))
         #return False
 
-
-# MAIN ##############################################################
+###########################################################
+# MAIN
+###########################################################
 if __name__ == "__main__":
     # Variaveis
     th = []
-
     menuExibir()
-    # Loop Principal ################################################
+
+    #####################
+    # Loop Principal
+    #####################
     while True:
-        print('Digite:')
+        print('attack>')
         data = sys.stdin.readline()
 
         # Se precisar de ajuda.
