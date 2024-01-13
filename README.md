@@ -1,13 +1,14 @@
-# SimpleScan
+# PortScanner Tool
 
-![Screenshot ](assets/icon.ico)
+![Screenshot ](https://github.com/AlldDev/PortScanner-Tool/blob/main/assets/portscanner_01.png)
+
+![Screenshot ](https://github.com/AlldDev/PortScanner-Tool/blob/main/assets/portscanner_02.png)
 
 ## Sobre:
-
 > Uma simples ferramenta para scan de redes !
 
 ## Detalhes:
-> Ferramenta desenvolvida pensando no auxilio ao suporte em Redes e Infraestruturas de T.I e derivados, Nada mais é do que um Portscan (Scaneador de Portas) que realiza uma varredura no Host especificado em busca de Portas e Protocolos, Podendo ser util para o descobrimento de vulnerabilidades no seu Host/servidor, conseguindo identifica-las e posteriormente as corrigir (manualmente).
+Ferramenta desenvolvida pensando no auxilio ao suporte em Redes e Infraestruturas de T.I e derivados, Nada mais é do que um Portscan (Scaneador de Portas) que realiza uma varredura no Host especificado em busca de Portas e Protocolos, Podendo ser util para o descobrimento de vulnerabilidades no seu Host/servidor, conseguindo identifica-las e posteriormente as corrigir (manualmente).
 
 ## Comandos:
 > MODO DE UTILIZAR<br>
