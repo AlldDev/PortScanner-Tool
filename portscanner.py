@@ -56,37 +56,39 @@ _DF = pd.read_csv('services-port.csv', sep=',', index_col='Port Number')
 ###########################################################
 def menuExibir():
     os.system('cls||clear')
-    print(f'''
-{cores['vermelho']}██████╗  ██████╗ ██████╗ ████████╗{cores['vermelho']}███████╗ ██████╗ █████╗ ███╗   ██╗███╗   ██╗███████╗██████╗
-{cores['magenta']}██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝{cores['magenta']}██╔════╝██╔════╝██╔══██╗████╗  ██║████╗  ██║██╔════╝██╔══██╗
-{cores['magenta']}██████╔╝██║   ██║██████╔╝   ██║   {cores['magenta']}███████╗██║     ███████║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝
-{cores['vermelho']}██╔═══╝ ██║   ██║██╔══██╗   ██║   {cores['vermelho']}╚════██║██║     ██╔══██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗
-{cores['vermelho']}██║     ╚██████╔╝██║  ██║   ██║   {cores['vermelho']}███████║╚██████╗██║  ██║██║ ╚████║██║ ╚████║███████╗██║  ██║
-{cores['vermelho']}╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   {cores['vermelho']}╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
-{cores['vermelho']}by github.com/AlldDev{cores['ciano']}
-{cores['vermelho']}duvidas? -> /help{cores['ciano']}
-{cores['limpar']}''')
+    print(f'''{cores['ciano']}
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⠄⠤⠆⠦⠪⠃⠛⠙⠋⢋⠫⣩⡹⢍⣖⡂⠢⡄⡀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢀⣠⡦⡚⡉⠅⠄⠄⠄⠤⠧⡀⠢⡀⠡⠲⢕⣁⠄⣀⣂⣔⡀⣄⣀⡀⣀⠢⠒⡠⠊               
+⠀⠀⠀⠀⠀⠀⠙⠉⠀⠀⠀⠓⣄⡤⣲⣢⣤⡶⠶⠽⠛⢛⠋⡛⡛⢍⢉⢫⣛⣓⣛⣵⣒⢐⠁                  
+⠀⠀⠀⠀⠀⠀⢄⣀⣀⡀⣀⡦⠞⡋⠹⡯⠃⠁⠁⠁⠁⠀⠀⠀⠀⠀⠳⡄⠀⠀⠈⠋⠐⠐⠩⠄                     
+⠀⠀⠑⠠⡀⢀⡀⢀⡴⠚⠁⡀⠂⠀⠠⡇⠀⠀⠀⣢⣤⡄⠀⠀⠀⠀⠀⠻⡀⠀⠀⠀⠀⢰⡀            ┏┓       ┏┓             ┏┳┓    ┓                     
+⠀⠀⠀⠀⠀⠀⣔⡟⢀⡀⠂⠀⠀⠀⡁⡇⠀⠀⠀⢿⣛⡁⠀⠀⠀⠀⠀⠀⣗⠀⠀⣀⢤⣿⡇             ┃┃┏┓┏┓╋  ┗┓┏┏┓┏┓┏┓┏┓┏┓   ┃ ┏┓┏┓┃       
+⠀⠀⠀⠀⣆⠇⢸⢠⠃⠀⠀⠀⠀⠀⠁⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡇⣠⢅⡥⢓⡿⠁             ┣┛┗┛┛ ┗  ┗┛┗┗┻┛┗┛┗┗ ┛    ┻ ┗┛┗┛┗         
+⠀⠀⠀⠘⠃⠀⠈⠀⠀⠀⠀⠀⠀⠀⠐⠊⢆⡄⠄⠀⠀⠀⠀⠀⠀⢀⢐⣀⣏⡟⡇⠖⡃                                   
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⡛⣖⡲⣦⡆⣶⣾⡯⣣⡻⠑⠒⠈                        by github.com/AlldDev                           ⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠆⠋⠗⠶⠕⠤⠦⠵⢩⠃⡉⠉⠁⠉⠀⠀⠀⠀⠀                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+{cores['limpar']} ''')
 
 
 def menuHelp():
     os.system('cls||clear')
     menuExibir()
     print(f'''{cores['vermelho']}* MODO DE UTILIZAR{cores['limpar']}
-/scan {cores['verde']}<alvo>{cores['limpar']} -p {cores['azul']}<porta>{cores['limpar']} -m {cores['magenta']}<modo>{cores['limpar']}
+/scan {cores['ciano']}<alvo>{cores['limpar']} -p {cores['ciano']}<porta>{cores['limpar']} -m {cores['ciano']}<modo>{cores['limpar']}
 
-{cores['verde']}<alvo>{cores['limpar']}  - IP ou Domínio.
+{cores['ciano']}<alvo>{cores['limpar']}  - IP ou Domínio.
 
-{cores['azul']}<porta>{cores['limpar']} - Portas ou Protocolo
+{cores['ciano']}<porta>{cores['limpar']} - Portas ou Protocolo
           Portas Especificas separar por Virgula (ex: 80,443,9050).
           {cores['amarelo']}default{cores['limpar']} - Scaneia as 30 principais portas.
           {cores['amarelo']}all{cores['limpar']} - Scaneia as 65536 portas, (Pode demorar um pouco).
 
-{cores['magenta']}<modo>{cores['limpar']}  - Seleciona o timeout (Muito util)
+{cores['ciano']}<modo>{cores['limpar']}  - Seleciona o timeout (Muito util)
           {cores['amarelo']}fast{cores['limpar']} - (0.2s de timeout) - Recomendado para REDES LOCAIS.
           {cores['amarelo']}normal{cores['limpar']} - (1s de timeout) - Recomendação PADRÃO.
           {cores['amarelo']}slow{cores['limpar']} - (3s de timeout) - Recomendado para PAGINAS WEB com respostas lenta
 {cores['vermelho']}* EXEMPLO{cores['limpar']}
-/scan {cores['verde']}seusite.com.br{cores['limpar']} -p {cores['azul']}default{cores['limpar']} -m {cores['magenta']}normal{cores['limpar']}''')
+/scan {cores['ciano']}seusite.com.br{cores['limpar']} -p {cores['ciano']}default{cores['limpar']} -m {cores['ciano']}normal{cores['limpar']}''')
 
 def p_scan(_HOST, _PORT, _TIMEOUT):
     global _PORTS_OPEN
@@ -145,9 +147,8 @@ def exibir(host, t_total):
     if tam <= 0:
         print(f'''{cores['vermelho']}Nenhuma porta aberta foi identificada! (Alguns endereços precisam de um timeout maior).{cores['limpar']}''')
     else:
-        print(f'''{cores['amarelo']}Target: {host}
-
-{cores['vermelho']}[STATUS] [PORTA]   [SERVIÇO EXECUTANDO]{cores['limpar']}''')
+        print(f'''Target: {cores['ciano']}{host}{cores['limpar']}''')
+        print("[STATUS] [PORTA]   [SERVIÇO EXECUTANDO]")
 
 
         for i in range(tam):
@@ -156,12 +157,11 @@ def exibir(host, t_total):
 
                 desc = _DF.loc[str(_PORTS_OPEN[i]), ['Description']].iloc[1].iloc[0]
 
-                print(f'''{cores['vermelho']}[{cores['verde']}Aberta{cores['vermelho']}] [{cores['verde']}{_PORTS_OPEN[i]}{cores['vermelho']}] - {cores['verde']}{desc}{cores['limpar']}''')
-
+                print(f'''[{cores['ciano']}Aberta{cores['limpar']}] [{cores['ciano']}{_PORTS_OPEN[i]}{cores['limpar']}] - {cores['ciano']}{desc}{cores['limpar']}''')
 
             except:
                 try:
-                    #print('Tentando descobrir serviço...')
+                    #print('Tentando descobrir serviço ...')
                     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     soc.settimeout(3)
                     conn = soc.connect((host, _PORTS_OPEN[i]))
@@ -169,7 +169,7 @@ def exibir(host, t_total):
                     print(f'[Aberta] [{host}] - {service}')
                     soc.close()
                 except:
-                    print(f'''{cores['vermelho']}[{cores['verde']}Aberta{cores['vermelho']}] [{cores['verde']}{_PORTS_OPEN[i]}{cores['vermelho']}] - {cores['verde']}Não identificada{cores['limpar']}''')
+                    print(f'''[{cores['ciano']}Aberta{cores['limpar']}] [{cores['ciano']}{_PORTS_OPEN[i]}{cores['limpar']}] - {cores['ciano']}Não identificada{cores['limpar']}''')
         print('\n{}Scan concluido em {:.2f} segundos!{}'.format(cores['amarelo'], t_total, cores['limpar']))
         _PORTS_OPEN = []  # Zerando o vetor para uma proxima verificação
 
@@ -211,7 +211,7 @@ if __name__ == "__main__":
     # Loop Principal
     #####################
     while True:
-        print('scan>')
+        print(f'''{cores['ciano']}scan: {cores['limpar']}''', end='')
         data = sys.stdin.readline()
 
         # Se precisar de ajuda.
