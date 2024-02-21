@@ -1,8 +1,8 @@
 # PortScanner Tool
 
-![Screenshot ](https://github.com/AlldDev/PortScanner-Tool/blob/main/assets/portscanner_01.png)
+![Screenshot ](https://github.com/AlldDev/PortScanner-Tool/blob/main/assets/img_01.png)
 
-![Screenshot ](https://github.com/AlldDev/PortScanner-Tool/blob/main/assets/portscanner_02.png)
+![Screenshot ](https://github.com/AlldDev/PortScanner-Tool/blob/main/assets/img_02.png)
 
 Uma ferramenta simples para realizar varreduras de portas em redes e infraestruturas de T.I.
 
